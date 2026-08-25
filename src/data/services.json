@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "name": "Consulta inicial",
+    "description": "Primera consulta para conocer las necesidades del cliente.",
+    "duration": 60,
+    "price": 15000,
+    "category": "Consultoría",
+    "available": true
+  },
+  {
+    "id": 2,
+    "name": "Asesoría técnica",
+    "description": "Asesoría personalizada sobre una necesidad específica.",
+    "duration": 45,
+    "price": 12000,
+    "category": "Asesoría",
+    "available": true
+  },
+  {
+    "id": 3,
+    "name": "Soporte técnico",
+    "description": "Servicio de soporte para resolver problemas técnicos.",
+    "duration": 30,
+    "price": 8000,
+    "category": "Soporte",
+    "available": false
+  }
+]
