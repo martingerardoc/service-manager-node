@@ -22,6 +22,14 @@ export class ServiceManager {
     return JSON.parse(data);
   }
 
+  saveServices() {
+    fs.writeFileSync(
+      servicesPath,
+      JSON.stringify(this.services, null, 2),
+      "utf-8"
+    );
+  }
+
   getServices() {
     return this.services;
   }
@@ -73,6 +81,8 @@ export class ServiceManager {
 
     this.services.push(newService);
 
+    this.saveServices();
+
     return newService;
   }
 
@@ -87,6 +97,8 @@ export class ServiceManager {
 
     Object.assign(service, dataToUpdate);
 
+    this.saveServices();
+
     return service;
   }
 
@@ -100,6 +112,8 @@ export class ServiceManager {
     }
 
     const [deletedService] = this.services.splice(index, 1);
+
+    this.saveServices();
 
     return deletedService;
   }

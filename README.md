@@ -90,6 +90,8 @@ npm run dev
 
 Al iniciar correctamente, la aplicación muestra información de configuración y ejemplos de operaciones realizadas mediante `ServiceManager`.
 
+
+
 ## Recurso Services
 
 Los servicios se encuentran inicialmente almacenados en:
@@ -137,6 +139,177 @@ Cada servicio tiene la siguiente estructura:
 | `price`       | Number  | Precio del servicio                   |
 | `category`    | String  | Categoría del servicio                |
 | `available`   | Boolean | Indica si el servicio está disponible |
+
+Endpoints de Services
+Obtener todos los servicios
+GET /api/services
+
+También permite filtrar por categoría:
+
+GET /api/services?category=Consultoría
+
+Y por disponibilidad:
+
+GET /api/services?available=true
+Obtener un servicio por ID
+GET /api/services/:sid
+
+Ejemplo:
+
+GET /api/services/1
+Crear un servicio
+POST /api/services
+
+Ejemplo de body:
+
+{
+  "name": "Mantenimiento preventivo",
+  "description": "Servicio de mantenimiento preventivo para equipos.",
+  "duration": 90,
+  "price": 20000,
+  "category": "Mantenimiento",
+  "available": true
+}
+
+El id se genera automáticamente y no debe enviarse en el body.
+
+Respuesta exitosa:
+
+201 Created
+Actualizar un servicio
+PUT /api/services/:sid
+
+Ejemplo:
+
+PUT /api/services/4
+
+Body:
+
+{
+  "price": 22000,
+  "available": false
+}
+
+El id no puede modificarse.
+
+Eliminar un servicio
+DELETE /api/services/:sid
+
+Ejemplo:
+
+DELETE /api/services/4
+
+Los cambios realizados mediante POST, PUT y DELETE se persisten en services.json.
+
+Bookings
+
+Las reservas se almacenan en:
+
+src/data/bookings.json
+
+Cada reserva tiene la siguiente estructura:
+
+{
+  "id": 1,
+  "clientName": "Juan Pérez",
+  "clientEmail": "juan@example.com",
+  "date": "2026-09-25",
+  "time": "10:30",
+  "status": "pending",
+  "services": []
+}
+Propiedades
+Propiedad	Tipo	Descripción
+id	Number	Identificador único generado automáticamente
+clientName	String	Nombre del cliente
+clientEmail	String	Correo electrónico del cliente
+date	String	Fecha de la reserva
+time	String	Hora de la reserva
+status	String	Estado de la reserva
+services	Array	Servicios asociados a la reserva
+
+Los servicios asociados se almacenan utilizando el siguiente formato:
+
+{
+  "service": 4,
+  "quantity": 1
+}
+
+Si el mismo servicio se agrega nuevamente a la reserva, se incrementa quantity en lugar de crear otro elemento.
+
+Por ejemplo:
+
+{
+  "services": [
+    {
+      "service": 4,
+      "quantity": 3
+    }
+  ]
+}
+Endpoints de Bookings
+Crear una reserva
+POST /api/bookings
+
+Ejemplo de body:
+
+{
+  "clientName": "Juan Pérez",
+  "clientEmail": "juan@example.com",
+  "date": "2026-09-25",
+  "time": "10:30",
+  "status": "pending"
+}
+
+El id se genera automáticamente y el campo services se inicializa como un array vacío.
+
+Respuesta exitosa:
+
+201 Created
+Obtener una reserva por ID
+GET /api/bookings/:bid
+
+Ejemplo:
+
+GET /api/bookings/1
+
+Si la reserva no existe, se devuelve:
+
+404 Not Found
+Agregar un servicio a una reserva
+POST /api/bookings/:bid/services/:sid
+
+Ejemplo:
+
+POST /api/bookings/1/services/4
+
+El endpoint valida que:
+
+La reserva exista.
+El servicio exista.
+Si el servicio ya está asociado a la reserva, se incremente quantity.
+Si no está asociado, se agregue con quantity: 1.
+
+Ejemplo de resultado:
+
+{
+  "id": 1,
+  "clientName": "Juan Pérez",
+  "clientEmail": "juan@example.com",
+  "date": "2026-09-25",
+  "time": "10:30",
+  "status": "pending",
+  "services": [
+    {
+      "service": 4,
+      "quantity": 1
+    }
+  ]
+}
+
+Los cambios realizados en las reservas se persisten en bookings.json.
+
+# Managers
 
 ## ServiceManager
 
@@ -226,6 +399,29 @@ console.log(deletedService);
 
 Si el servicio no existe, el método devuelve `null`.
 
+BookingManager
+
+Ubicación:
+
+src/managers/BookingManager.js
+
+Métodos:
+
+createBooking(bookingData)
+getBookingById(id)
+addServiceToBooking(bookingId, serviceId)
+
+Los cambios se almacenan en bookings.json.
+
+Persistencia
+
+La aplicación utiliza el módulo fs de Node.js para leer y escribir los archivos JSON:
+
+src/data/services.json
+src/data/bookings.json
+
+Los datos creados, modificados o eliminados se escriben en los archivos correspondientes, permitiendo conservar la información después de reiniciar el servidor.
+
 ## Scripts disponibles
 
 ### Iniciar la aplicación
@@ -239,6 +435,10 @@ npm start
 ```bash
 npm run dev
 ```
+## Producción
+npm start
+## Desarrollo
+npm run dev
 
 ## Autor
 

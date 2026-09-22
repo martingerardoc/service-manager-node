@@ -25,5 +25,14 @@
     "price": 8000,
     "category": "Soporte",
     "available": false
+  },
+  {
+    "id": 4,
+    "name": "Mantenimiento preventivo",
+    "description": "Servicio de mantenimiento preventivo para equipos.",
+    "duration": 90,
+    "price": 20000,
+    "category": "Mantenimiento",
+    "available": true
   }
 ]
